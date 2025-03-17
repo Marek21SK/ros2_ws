@@ -1,0 +1,485 @@
+<sdf version='1.11'>
+  <model name='jetbot'>
+    <link name='base_link'>
+      <inertial>
+        <pose>0 0 0.0026562500000000002 0 0 0</pose>
+        <mass>1.6000000000000001</mass>
+        <inertia>
+          <ixx>0.021169335937499999</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.021169335937499999</iyy>
+          <iyz>0</iyz>
+          <izz>0.042000000000000003</izz>
+        </inertia>
+      </inertial>
+      <collision name='base_link_collision_collision'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.050000000000000003</length>
+            <radius>0.1066</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.5</mu>
+              <mu2>0.5</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__lidar_base_collision_1'>
+        <pose>0 0 0.042500000000000003 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.035000000000000003</length>
+            <radius>0.040000000000000001</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='base_link_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.050000000000000003</length>
+            <radius>0.1066</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Green</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 1 0 1</diffuse>
+          <ambient>0 1 0 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__camera_visual_1'>
+        <pose>0.10000000000000001 0 0.029999999999999999 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.029999999999999999 0.029999999999999999 0.029999999999999999</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 0 0 1</diffuse>
+          <ambient>0 0 0 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__lidar_base_visual_2'>
+        <pose>0 0 0.042500000000000003 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.035000000000000003</length>
+            <radius>0.040000000000000001</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Green</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 1 0 1</diffuse>
+          <ambient>0 1 0 1</ambient>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__lidar_visual_3'>
+        <pose>0 0 0.059999999999999998 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.02</length>
+            <radius>0.040000000000000001</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 0 0 1</diffuse>
+          <ambient>0 0 0 1</ambient>
+        </material>
+      </visual>
+      <sensor name='sim_camera' type='camera'>
+        <update_rate>30</update_rate>
+        <camera>
+          <horizontal_fov>1.3962600000000001</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.10000000000000001</near>
+            <far>100</far>
+          </clip>
+        </camera>
+        <plugin name='gz::sim::systems::Camera' filename='gz-sim-camera-system'>
+          <topic>/image_raw</topic>
+          <frame_id>camera</frame_id>
+        </plugin>
+        <pose>0.10000000000000001 0 0.029999999999999999 0 0 0</pose>
+      </sensor>
+      <sensor name='lidar_sensor' type='gpu_lidar'>
+        <update_rate>20</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>720</samples>
+              <resolution>1</resolution>
+              <min_angle>-1.5700000000000001</min_angle>
+              <max_angle>1.5700000000000001</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.12</min>
+            <max>10</max>
+          </range>
+        </ray>
+        <plugin name='gz::sim::systems::GpuLidar' filename='gz-sim-gpu-lidar-system'>
+          <topic>/scan</topic>
+          <frame_id>lidar</frame_id>
+        </plugin>
+        <pose>0 0 0.059999999999999998 0 0 0</pose>
+      </sensor>
+      <plugin filename='gz-sim-touchplugin-system' name='gz::sim::systems::TouchPlugin'>
+        <target>base_link</target>
+        <namespace>jetbot</namespace>
+        <time>0.001</time>
+        <enabled>true</enabled>
+      </plugin>
+    </link>
+    <joint name='balance_joint' type='revolute'>
+      <pose relative_to='base_link'>0.089999999999999997 0 -0.027 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>balance_wheel</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <effort>0.10000000000000001</effort>
+          <velocity>10</velocity>
+          <lower>-inf</lower>
+          <upper>inf</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='balance_wheel'>
+      <pose relative_to='balance_joint'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.050000000000000003</mass>
+        <inertia>
+          <ixx>0.00050000000000000001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00050000000000000001</iyy>
+          <iyz>0</iyz>
+          <izz>0.00050000000000000001</izz>
+        </inertia>
+      </inertial>
+      <collision name='balance_wheel_collision'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <sphere>
+            <radius>0.014999999999999999</radius>
+          </sphere>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='balance_wheel_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <sphere>
+            <radius>0.014999999999999999</radius>
+          </sphere>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 0 0 1</diffuse>
+          <ambient>0 0 0 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='balance_joint_2' type='revolute'>
+      <pose relative_to='base_link'>-0.089999999999999997 0 -0.027 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>balance_wheel_2</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <effort>0.10000000000000001</effort>
+          <velocity>10</velocity>
+          <lower>-inf</lower>
+          <upper>inf</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='balance_wheel_2'>
+      <pose relative_to='balance_joint_2'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.050000000000000003</mass>
+        <inertia>
+          <ixx>0.00050000000000000001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.00050000000000000001</iyy>
+          <iyz>0</iyz>
+          <izz>0.00050000000000000001</izz>
+        </inertia>
+      </inertial>
+      <collision name='balance_wheel_2_collision'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <sphere>
+            <radius>0.014999999999999999</radius>
+          </sphere>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='balance_wheel_2_visual'>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <sphere>
+            <radius>0.014999999999999999</radius>
+          </sphere>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 0 0 1</diffuse>
+          <ambient>0 0 0 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='left_wheel_joint' type='revolute'>
+      <pose relative_to='base_link'>0 0.1066 -0.02 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>left_wheel</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-inf</lower>
+          <upper>inf</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='left_wheel'>
+      <pose relative_to='left_wheel_joint'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.10000000000000001</mass>
+        <inertia>
+          <ixx>0.001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.001</iyy>
+          <iyz>0</iyz>
+          <izz>0.002</izz>
+        </inertia>
+      </inertial>
+      <collision name='left_wheel_collision_collision'>
+        <pose>0 0 0 1.5707 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.02</length>
+            <radius>0.033000000000000002</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode>
+              <kp>1000000</kp>
+              <kd>100</kd>
+            </ode>
+          </contact>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='left_wheel_visual'>
+        <pose>0 0 0 1.5707 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.02</length>
+            <radius>0.033000000000000002</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Blue</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 0 1 1</diffuse>
+          <ambient>0 0 1 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <joint name='right_wheel_joint' type='revolute'>
+      <pose relative_to='base_link'>0 -0.1066 -0.02 0 0 0</pose>
+      <parent>base_link</parent>
+      <child>right_wheel</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-inf</lower>
+          <upper>inf</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='right_wheel'>
+      <pose relative_to='right_wheel_joint'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.10000000000000001</mass>
+        <inertia>
+          <ixx>0.001</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.001</iyy>
+          <iyz>0</iyz>
+          <izz>0.002</izz>
+        </inertia>
+      </inertial>
+      <collision name='right_wheel_collision_collision'>
+        <pose>0 0 0 1.5707 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.02</length>
+            <radius>0.033000000000000002</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode>
+              <kp>1000000</kp>
+              <kd>100</kd>
+            </ode>
+          </contact>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='right_wheel_visual'>
+        <pose>0 0 0 1.5707 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.02</length>
+            <radius>0.033000000000000002</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Blue</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 0 1 1</diffuse>
+          <ambient>0 0 1 1</ambient>
+        </material>
+      </visual>
+    </link>
+    <plugin name='gz::sim::systems::DiffDrive' filename='gz-sim-diff-drive-system'>
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>0.21325</wheel_separation>
+      <wheel_radius>0.033</wheel_radius>
+      <odom_topic>/jetbot/odom</odom_topic>
+      <odom_publish_frequency>10</odom_publish_frequency>
+      <cmd_topic>/jetbot/cmd_vel</cmd_topic>
+      <cmd_timeout>0.5</cmd_timeout>
+      <tf_topic>/tf</tf_topic>
+      <frame_id>odom</frame_id>
+      <child_frame_id>base_link</child_frame_id>
+      <publish_tf>true</publish_tf>
+    </plugin>
+    <plugin name='gz::sim::systems::JointStatePublisher' filename='gz-sim-joint-state-publisher-system'>
+      <topic>joint_states</topic>
+      <joint_name>left_wheel_joint</joint_name>
+      <joint_name>right_wheel_joint</joint_name>
+    </plugin>
+    <frame name='camera_joint' attached_to='base_link'>
+      <pose>0.10000000000000001 0 0.029999999999999999 0 0 0</pose>
+    </frame>
+    <frame name='camera' attached_to='camera_joint'>
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name='lidar_joint' attached_to='lidar_base'>
+      <pose>0 0 0.035000000000000003 0 0 0</pose>
+    </frame>
+    <frame name='lidar' attached_to='lidar_joint'>
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    <frame name='lidar_base_joint' attached_to='base_link'>
+      <pose>0 0 0.025000000000000001 0 0 0</pose>
+    </frame>
+    <frame name='lidar_base' attached_to='lidar_base_joint'>
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+  </model>
+</sdf>

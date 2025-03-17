@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>jetbot_gazebo</name>
+  <version>0.0.0</version>
+  <description>JetBot Gazebo simulation</description>
+  <maintainer email="mpastor2@student.umb.sk">mpastor2</maintainer>
+  <license>Apache-2.0</license>
+
+  <depend>ros2launch</depend>
+  <depend>rclcpp</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>diff_drive_controller</depend>
+  <depend>gz_ros2_control</depend>
+  <depend>ros_gz</depend>
+  <depend>ros_gz_bridge</depend>
+  <depend>ros_gz_sim</depend>
+  <depend>controller_manager</depend>
+
+  <build_depend>ament_cmake</build_depend>
+  <build_depend>ament_cmake_ros</build_depend>
+  <build_depend>rosidl_typesupport_c</build_depend>
+  <build_export_depend>ament_cmake_ros</build_export_depend>
+  <exec_depend>ament_cmake</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

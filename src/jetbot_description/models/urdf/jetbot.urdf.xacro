@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="jetbot">
+
+  <!-- Premenné -->
+  <xacro:property name="wheel_radius" value="0.03"/>
+  <xacro:property name="wheel_length" value="0.02"/>
+  <xacro:property name="body_radius" value="0.1"/>
+  <xacro:property name="body_length" value="0.05"/>
+  <xacro:property name="camera_size" value="0.03"/>
+  <xacro:property name="lidar_radius" value="0.04"/>
+  <xacro:property name="lidar_length" value="0.02"/>
+  <xacro:property name="lidar_base_radius" value="0.04"/>
+  <xacro:property name="lidar_base_length" value="0.035"/>
+
+  <!-- Materiály -->
+  <material name="green"><color rgba="0 1 0 1"/></material>
+  <material name="blue"><color rgba="0 0 1 1"/></material>
+  <material name="black"><color rgba="0 0 0 1"/></material>
+
+  <link name="base_dummy"/>
+
+  <joint name="base_fixed_joint" type="fixed">
+    <parent link="base_dummy"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Telo robota -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder radius="${body_radius}" length="${body_length}"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${body_radius}" length="${body_length}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.5"/>
+      <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.04"/>
+    </inertial>
+  </link>
+
+  <!-- Makro pre koleso -->
+  <xacro:macro name="wheel" params="name x y z">
+    <link name="${name}">
+      <visual>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="1.5707 0 0"/>
+        <material name="blue"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="1.5707 0 0"/>
+      </collision>
+      <inertial>
+        <mass value="0.1"/>
+        <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.002"/>
+      </inertial>
+    </link>
+
+    <joint name="${name}_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${name}"/>
+      <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Vytvorenie kolies -->
+  <xacro:wheel name="left_wheel" x="0" y="0.11" z="-0.02"/>
+  <xacro:wheel name="right_wheel" x="0" y="-0.11" z="-0.02"/>
+
+  <!-- Pomocné koleso -->
+  <link name="balance_wheel">
+    <visual>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.0005" ixy="0" ixz="0" iyy="0.0005" iyz="0" izz="0.0005"/>
+    </inertial>
+  </link>
+
+  <joint name="balance_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="balance_wheel"/>
+    <origin xyz="0.1 0 -0.027" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- Kamera -->
+  <link name="camera">
+    <visual>
+      <geometry>
+        <box size="${camera_size} ${camera_size} ${camera_size}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera"/>
+    <origin xyz="0.1 0 0.03" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Podstavec pre LIDAR -->
+  <link name="lidar_base">
+    <visual>
+      <geometry>
+        <cylinder radius="${lidar_base_radius}" length="${lidar_base_length}"/>
+      </geometry>
+      <origin xyz="0 0 ${lidar_base_length / 2}" rpy="0 0 0"/>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${lidar_base_radius}" length="${lidar_base_length}"/>
+      </geometry>
+      <origin xyz="0 0 ${lidar_base_length / 2}" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 ${lidar_base_length / 2}"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.002"/>
+    </inertial>
+  </link>
+
+  <joint name="lidar_base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_base"/>
+    <origin xyz="0 0 0.025" rpy="0 0 0"/>
+  </joint>
+
+  <!-- LIDAR -->
+  <link name="lidar">
+    <visual>
+      <geometry>
+        <cylinder radius="${lidar_radius}" length="${lidar_length}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+
+  <joint name="lidar_joint" type="fixed">
+    <parent link="lidar_base"/>
+    <child link="lidar"/>
+    <origin xyz="0 0 0.035" rpy="0 0 0"/>
+  </joint>
+
+  <!-- GAZEBO -->
+  <gazebo reference="camera">
+    <sensor type="camera" name="sim_camera">
+      <update_rate>30</update_rate>
+      <camera>
+        <horizontal_fov>1.39626</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.1</near>
+          <far>100</far>
+        </clip>
+      </camera>
+      <plugin name="gazebo_ros_camera" filename="libgazebo_ros_camera.so">
+        <always_on>true</always_on>
+        <update_rate>30.0</update_rate>
+        <camera_name>sim_camera</camera_name>
+        <image_topic_name>image_raw</image_topic_name>
+        <frame_name>camera_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="lidar">
+    <sensor name="lidar_sensor" type="gpu_lidar">
+      <update_rate>20</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-1.57</min_angle>
+            <max_angle>1.57</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.12</min>
+          <max>10.0</max>
+        </range>
+      </ray>
+      <plugin name="gazebo_ros_laser" filename="libgazebo_ros_gpu_laser.so">
+        <topicName>/scan</topicName>
+        <frameName>lidar</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>
+
