@@ -55,12 +55,12 @@
     <mu1>0.5</mu1>
     <mu2>0.5</mu2>
     <!-- Pridanie kontaktného senzora -->
-    <plugin filename="gz-sim-touchplugin-system" name="gz::sim::systems::TouchPlugin">
-      <target>base_link</target>
-      <namespace>jetbot</namespace>
-      <time>0.001</time>
-      <enabled>true</enabled>
-    </plugin>
+<!--    <plugin filename="gz-sim-touchplugin-system" name="gz::sim::systems::TouchPlugin">-->
+<!--      <target>base_link</target>-->
+<!--      <namespace>jetbot</namespace>-->
+<!--      <time>0.001</time>-->
+<!--      <enabled>true</enabled>-->
+<!--    </plugin>-->
   </gazebo>
     
   <!-- Ľavé koleso -->
@@ -230,7 +230,7 @@
         </clip>
       </camera>
       <plugin name="gz::sim::systems::Camera" filename="gz-sim-camera-system">
-        <topic>/image_raw</topic>
+        <topic>image</topic>
         <frame_id>camera</frame_id>
       </plugin>
     </sensor>
@@ -301,7 +301,7 @@
         </range>
       </ray>
       <plugin name="gz::sim::systems::GpuLidar" filename="gz-sim-gpu-lidar-system">
-        <topic>/scan</topic>
+        <topic>scan</topic>
         <frame_id>lidar</frame_id>
       </plugin>
     </sensor>
@@ -320,11 +320,11 @@
       <right_joint>right_wheel_joint</right_joint>
       <wheel_separation>0.21325</wheel_separation> <!-- <wheel_separation>0.22</wheel_separation> -->
       <wheel_radius>0.033</wheel_radius> <!-- <wheel_radius>0.03</wheel_radius> -->
-      <odom_topic>/jetbot/odom</odom_topic> <!-- /jetbot/odom -->
+      <odom_topic>odom</odom_topic> <!-- /jetbot/odom -->
       <odom_publish_frequency>10</odom_publish_frequency>
-      <cmd_topic>/jetbot/cmd_vel</cmd_topic> <!-- /jetbot/cmdl_vel -->
+      <topic>cmd_vel</topic> <!-- /jetbot/cmdl_vel -->
       <cmd_timeout>0.5</cmd_timeout>
-      <tf_topic>/tf</tf_topic>
+      <tf_topic>tf</tf_topic>
       <frame_id>odom</frame_id>
       <child_frame_id>base_link</child_frame_id>
       <publish_tf>true</publish_tf>
