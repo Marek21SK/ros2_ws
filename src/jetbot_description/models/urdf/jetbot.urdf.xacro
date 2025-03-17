@@ -2,10 +2,11 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="jetbot">
 
   <!-- Premenné -->
-  <xacro:property name="wheel_radius" value="0.03"/>
+  <xacro:property name="wheel_radius" value="0.033"/>
   <xacro:property name="wheel_length" value="0.02"/>
-  <xacro:property name="body_radius" value="0.1"/>
+  <xacro:property name="body_radius" value="0.1066"/>
   <xacro:property name="body_length" value="0.05"/>
+  <xacro:property name="caster_radius" value="0.015"/>
   <xacro:property name="camera_size" value="0.03"/>
   <xacro:property name="lidar_radius" value="0.04"/>
   <xacro:property name="lidar_length" value="0.02"/>
@@ -16,14 +17,6 @@
   <material name="green"><color rgba="0 1 0 1"/></material>
   <material name="blue"><color rgba="0 0 1 1"/></material>
   <material name="black"><color rgba="0 0 0 1"/></material>
-
-  <link name="base_dummy"/>
-
-  <joint name="base_fixed_joint" type="fixed">
-    <parent link="base_dummy"/>
-    <child link="base_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-  </joint>
 
   <!-- Telo robota -->
   <link name="base_link">
@@ -42,7 +35,29 @@
       <mass value="1.5"/>
       <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.02" iyz="0" izz="0.04"/>
     </inertial>
+    <!-- Sensor pre IMU -->
+    <sensor type="imu" name="imu_sensor">
+      <update_rate>100</update_rate>
+      <always_on>1</always_on>
+      <visualize>true</visualize>
+      <topic>/imu</topic>
+    </sensor>
+    <!-- Sensor pre kontaktný senzor -->
+    <sensor type="contact" name="contact_sensor">
+      <update_rate>100</update_rate>
+      <contact>
+        <collision>base_link_collision</collision>
+        <collision>left_wheel_collision</collision>
+        <collision>right_wheel_collision</collision>
+      </contact>
+    </sensor>
   </link>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/Green</material>
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+  </gazebo>
 
   <!-- Makro pre koleso -->
   <xacro:macro name="wheel" params="name x y z">
@@ -54,7 +69,7 @@
         <origin xyz="0 0 0" rpy="1.5707 0 0"/>
         <material name="blue"/>
       </visual>
-      <collision>
+      <collision name="${name}_collision">
         <geometry>
           <cylinder radius="${wheel_radius}" length="${wheel_length}"/>
         </geometry>
@@ -65,7 +80,13 @@
         <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.002"/>
       </inertial>
     </link>
-
+    <gazebo reference="${name}">
+      <material>Gazebo/Blue</material>
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+      <kp>1000000.0</kp>
+      <kd>100.0</kd>
+    </gazebo>
     <joint name="${name}_joint" type="continuous">
       <parent link="base_link"/>
       <child link="${name}"/>
@@ -74,35 +95,47 @@
     </joint>
   </xacro:macro>
 
-  <!-- Vytvorenie kolies -->
-  <xacro:wheel name="left_wheel" x="0" y="0.11" z="-0.02"/>
-  <xacro:wheel name="right_wheel" x="0" y="-0.11" z="-0.02"/>
+  <!-- Vytvorenie hlavných kolies -->
+  <xacro:wheel name="left_wheel" x="0" y="0.1066" z="-0.02"/>
+  <xacro:wheel name="right_wheel" x="0" y="-0.1066" z="-0.02"/>
 
-  <!-- Pomocné koleso -->
-  <link name="balance_wheel">
-    <visual>
-      <geometry>
-        <sphere radius="0.02"/>
-      </geometry>
-      <material name="black"/>
-    </visual>
-    <collision>
-      <geometry>
-        <sphere radius="0.02"/>
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="0.05"/>
-      <inertia ixx="0.0005" ixy="0" ixz="0" iyy="0.0005" iyz="0" izz="0.0005"/>
-    </inertial>
-  </link>
+  <!-- Makro pre pomocné koleso -->
+  <xacro:macro name="caster_wheel" params="name x">
+    <link name="${name}">
+      <visual>
+        <geometry>
+          <sphere radius="${caster_radius}"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <geometry>
+          <sphere radius="${caster_radius}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.05"/>
+        <inertia ixx="0.0005" ixy="0" ixz="0" iyy="0.0005" iyz="0" izz="0.0005"/>
+      </inertial>
+    </link>
+    <gazebo reference="${name}">
+      <material>Gazebo/Black</material>
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+    </gazebo>
+    <joint name="${name}_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${name}"/>
+      <origin xyz="${x} 0 -0.027" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-0.1" upper="0.1" effort="0.1" velocity="1.0"/>
+      <dynamics damping="0.1" friction="0.05"/>
+    </joint>
+  </xacro:macro>
 
-  <joint name="balance_joint" type="continuous">
-    <parent link="base_link"/>
-    <child link="balance_wheel"/>
-    <origin xyz="0.1 0 -0.027" rpy="0 0 0"/>
-    <axis xyz="0 1 0"/>
-  </joint>
+  <!-- Vytvorenie pomocných kolies -->
+  <xacro:caster_wheel name="balance_wheel" x="0.09"/>
+  <xacro:caster_wheel name="balance_wheel_2" x="-0.09"/>
 
   <!-- Kamera -->
   <link name="camera">
@@ -113,7 +146,28 @@
       <material name="black"/>
     </visual>
   </link>
-
+  <gazebo reference="camera">
+    <material>Gazebo/Black</material>
+    <sensor type="camera" name="sim_camera">
+      <update_rate>30</update_rate>
+      <camera>
+        <horizontal_fov>1.39626</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.1</near>
+          <far>100</far>
+        </clip>
+      </camera>
+      <plugin name="gz::sim::systems::Camera" filename="gz-sim-camera-system">
+        <topic>/image_raw</topic>
+        <frame_id>camera</frame_id>
+      </plugin>
+    </sensor>
+  </gazebo>
   <joint name="camera_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera"/>
@@ -141,7 +195,9 @@
       <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.002"/>
     </inertial>
   </link>
-
+  <gazebo reference="lidar_base">
+    <material>Gazebo/Green</material>
+  </gazebo>
   <joint name="lidar_base_joint" type="fixed">
     <parent link="base_link"/>
     <child link="lidar_base"/>
@@ -157,41 +213,9 @@
       <material name="black"/>
     </visual>
   </link>
-
-  <joint name="lidar_joint" type="fixed">
-    <parent link="lidar_base"/>
-    <child link="lidar"/>
-    <origin xyz="0 0 0.035" rpy="0 0 0"/>
-  </joint>
-
-  <!-- GAZEBO -->
-  <gazebo reference="camera">
-    <sensor type="camera" name="sim_camera">
-      <update_rate>30</update_rate>
-      <camera>
-        <horizontal_fov>1.39626</horizontal_fov>
-        <image>
-          <width>640</width>
-          <height>480</height>
-          <format>R8G8B8</format>
-        </image>
-        <clip>
-          <near>0.1</near>
-          <far>100</far>
-        </clip>
-      </camera>
-      <plugin name="gazebo_ros_camera" filename="libgazebo_ros_camera.so">
-        <always_on>true</always_on>
-        <update_rate>30.0</update_rate>
-        <camera_name>sim_camera</camera_name>
-        <image_topic_name>image_raw</image_topic_name>
-        <frame_name>camera_link</frame_name>
-      </plugin>
-    </sensor>
-  </gazebo>
-
   <gazebo reference="lidar">
-    <sensor name="lidar_sensor" type="gpu_lidar">
+    <material>Gazebo/Black</material>
+    <sensor type="gpu_lidar" name="lidar_sensor">
       <update_rate>20</update_rate>
       <ray>
         <scan>
@@ -207,12 +231,41 @@
           <max>10.0</max>
         </range>
       </ray>
-      <plugin name="gazebo_ros_laser" filename="libgazebo_ros_gpu_laser.so">
-        <topicName>/scan</topicName>
-        <frameName>lidar</frameName>
+      <plugin name="gz::sim::systems::GpuLidar" filename="gz-sim-gpu-lidar-system">
+        <topic>/scan</topic>
+        <frame_id>lidar</frame_id>
       </plugin>
     </sensor>
   </gazebo>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="lidar_base"/>
+    <child link="lidar"/>
+    <origin xyz="0 0 0.035" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Diferenciálny pohon -->
+  <gazebo>
+    <plugin name="gz::sim::systems::DiffDrive" filename="gz-sim-diff-drive-system">
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>0.21325</wheel_separation>
+      <wheel_radius>${wheel_radius}</wheel_radius>
+      <odom_topic>odom</odom_topic>
+      <odom_publish_frequency>10</odom_publish_frequency>
+      <topic>cmd_vel</topic>
+      <cmd_timeout>0.5</cmd_timeout>
+      <tf_topic>tf</tf_topic>
+      <frame_id>odom</frame_id>
+      <child_frame_id>base_link</child_frame_id>
+      <publish_tf>true</publish_tf>
+    </plugin>
+  </gazebo>
+
+  <!-- JointStatePublisher plugin -->
+  <gazebo>
+    <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system">
+      <topic>joint_states</topic>
+    </plugin>
+  </gazebo>
 
 </robot>
-
