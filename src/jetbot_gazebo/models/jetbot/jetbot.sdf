@@ -63,12 +63,12 @@
       <inertial>
         <mass>0.1</mass>
         <inertia>
-          <ixx>0.001</ixx>
+          <ixx>0.000036</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.001</iyy>
+          <iyy>0.000054</iyy>
           <iyz>0</iyz>
-          <izz>0.002</izz>
+          <izz>0.000054</izz>
         </inertia>
       </inertial>
       <visual name='left_wheel_visual'>
@@ -113,12 +113,12 @@
       <inertial>
         <mass>0.1</mass>
         <inertia>
-          <ixx>0.001</ixx>
+          <ixx>0.000036</ixx>
           <ixy>0</ixy>
           <ixz>0</ixz>
-          <iyy>0.001</iyy>
+          <iyy>0.000054</iyy>
           <iyz>0</iyz>
-          <izz>0.002</izz>
+          <izz>0.000054</izz>
         </inertia>
       </inertial>
       <visual name='right_wheel_visual'>
@@ -157,9 +157,48 @@
       </axis>
     </joint>
 
+  <!-- Podstavec pre pomocné koleso -->
+  <link name='balance_wheel_base'>
+    <pose relative_to="base_link">0.07 0 -0.034 0 0 0</pose>
+    <inertial>
+      <mass>0.03</mass>
+      <inertia>
+        <ixx>0.0003</ixx>
+        <iyy>0.0003</iyy>
+        <izz>0.0003</izz>
+      </inertia>
+    </inertial>
+    <visual name='balance_wheel_base_visual'>
+      <geometry>
+        <box>
+          <size>0.02 0.02 0.02</size>
+        </box>
+      </geometry>
+      <material>
+        <ambient>0.7 0.7 0.7 1</ambient>
+        <diffuse>0.7 0.7 0.7 1</diffuse>
+        <specular>0.7 0.7 0.7 1</specular>
+      </material>
+    </visual>
+    <collision name='balance_wheel_base_collision'>
+      <geometry>
+        <box>
+          <size>0.02 0.02 0.02</size>
+        </box>
+      </geometry>
+    </collision>
+  </link>
+  <joint name='balance_wheel_base_joint' type='fixed'>
+    <parent>base_link</parent>
+    <child>balance_wheel_base</child>
+  </joint>
+
     <!-- Pomocné koleso -->
+    <frame name='balance_wheel_frame' attached_to='base_link'>
+      <pose>0.07 0 -0.045 0 0 0</pose>
+    </frame>
     <link name='balance_wheel'>
-      <pose relative_to="base_link">0.09 0 -0.027 0 0 0</pose>
+      <pose relative_to='balance_wheel_frame'/>
       <inertial>
         <mass>0.05</mass>
         <inertia>
@@ -174,7 +213,7 @@
       <visual name='balance_wheel_visual'>
         <geometry>
           <sphere>
-            <radius>0.015</radius>
+            <radius>0.01</radius>
           </sphere>
         </geometry>
           <material>
@@ -186,27 +225,58 @@
       <collision name='balance_wheel_collision'>
         <geometry>
           <sphere>
-            <radius>0.015</radius>
+            <radius>0.01</radius>
           </sphere>
         </geometry>
       </collision>
     </link>
-    <joint name='balance_joint' type='revolute'>
+    <joint name='balance_wheel_joint' type='ball'>
       <parent>base_link</parent>
       <child>balance_wheel</child>
-      <dynamics damping="0.1" friction="0.05"/>
-      <axis>
-        <xyz expressed_in='__model__'>0 1 0</xyz>
-        <limit>
-          <lower>-1.79769e+308</lower>
-          <upper>1.79769e+308</upper>
-        </limit>
-      </axis>
+    </joint>
+
+    <!-- Podstavec pre pomocné koleso_2 -->
+    <link name='balance_wheel_2_base'>
+      <pose relative_to="base_link">-0.07 0 -0.034 0 0 0</pose>
+      <inertial>
+        <mass>0.03</mass>
+        <inertia>
+          <ixx>0.0003</ixx>
+          <iyy>0.0003</iyy>
+          <izz>0.0003</izz>
+        </inertia>
+      </inertial>
+      <visual name='balance_wheel_2_base_visual'>
+        <geometry>
+          <box>
+            <size>0.02 0.02 0.02</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.7 0.7 0.7 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.7 0.7 0.7 1</specular>
+        </material>
+      </visual>
+      <collision name='balance_wheel_2_base_collision'>
+        <geometry>
+          <box>
+            <size>0.02 0.02 0.02</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+    <joint name='balance_wheel_2_base_joint' type='fixed'>
+      <parent>base_link</parent>
+      <child>balance_wheel_2_base</child>
     </joint>
 
     <!-- Pomocné koleso_2 -->
+    <frame name='balance_wheel_2_frame' attached_to='base_link'>
+      <pose>-0.07 0 -0.045 0 0 0</pose>
+    </frame>
     <link name='balance_wheel_2'>
-      <pose relative_to="base_link">-0.09 0 -0.027 0 0 0</pose>
+      <pose relative_to='balance_wheel_2_frame'/>
       <inertial>
         <mass>0.05</mass>
         <inertia>
@@ -221,7 +291,7 @@
       <visual name='balance_wheel_2_visual'>
         <geometry>
           <sphere>
-            <radius>0.015</radius>
+            <radius>0.01</radius>
           </sphere>
         </geometry>
           <material>
@@ -233,31 +303,631 @@
       <collision name='balance_wheel_2_collision'>
         <geometry>
           <sphere>
-            <radius>0.015</radius>
+            <radius>0.01</radius>
           </sphere>
         </geometry>
       </collision>
     </link>
-    <joint name='balance_joint_2' type='revolute'>
+    <joint name='balance_wheel_2_joint' type='ball'>
       <parent>base_link</parent>
       <child>balance_wheel_2</child>
-      <dynamics damping="0.1" friction="0.05"/>
-      <axis>
-        <xyz expressed_in='__model__'>0 1 0</xyz>
-        <limit>
-          <lower>-1.79769e+308</lower>
-          <upper>1.79769e+308</upper>
-        </limit>
-      </axis>
+    </joint>
+
+    <!-- Anténka_1 -->
+    <link name='antenna_1'>
+      <pose relative_to="base_link">-0.08 0.04 0.09 0 0 0</pose>
+      <inertial>
+        <mass>0.02</mass>
+        <inertia>
+          <ixx>0.0002</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0002</iyy>
+          <iyz>0</iyz>
+          <izz>0.0002</izz>
+        </inertia>
+      </inertial>
+      <visual name='antenna_1_visual'>
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.15</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name='antenna_1_collision'>
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.15</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <joint name='antenna_1_joint' type='fixed'>
+      <parent>base_link</parent>
+      <child>antenna_1</child>
+      <pose relative_to='base_link'>-0.08 0.04 0.09 0 0 0</pose>
+    </joint>
+
+    <!-- Anténka_2 -->
+    <link name='antenna_2'>
+      <pose relative_to="base_link">-0.08 -0.04 0.09 0 0 0</pose>
+      <inertial>
+        <mass>0.02</mass>
+        <inertia>
+          <ixx>0.0002</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0002</iyy>
+          <iyz>0</iyz>
+          <izz>0.0002</izz>
+        </inertia>
+      </inertial>
+      <visual name='antenna_2_visual'>
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.15</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name='antenna_2_collision'>
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.15</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <joint name='antenna_2_joint' type='fixed'>
+      <parent>base_link</parent>
+      <child>antenna_2</child>
+      <pose relative_to='base_link'>-0.08 -0.04 0.09 0 0 0</pose>
+    </joint>
+
+    <!-- Piliere spodné -->
+    <link name="pillar_1">
+      <pose relative_to="base_link">0.05 0.05 0.025 0 0 0</pose>
+      <inertial>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>0.0005</ixx>
+          <iyy>0.0005</iyy>
+          <izz>0.0005</izz>
+        </inertia>
+      </inertial>
+      <visual name="pillar_1_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.05</length>
+          </cylinder>
+        </geometry>
+          <material>
+            <ambient>0 0 0 1</ambient>
+            <diffuse>0 0 0 1</diffuse>
+            <specular>0 0 0 1</specular>
+          </material>
+      </visual>
+      <collision name="pillar_1_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.05</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="pillar_1_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>pillar_1</child>
+    </joint>
+    <link name="pillar_2">
+      <pose relative_to="base_link">-0.05 0.05 0.025 0 0 0</pose>
+      <visual name="pillar_2_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.05</length>
+          </cylinder>
+        </geometry>
+      </visual>
+    </link>
+    <joint name="pillar_2_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>pillar_2</child>
+    </joint>
+    <link name="pillar_3">
+      <pose relative_to="base_link">0.05 -0.05 0.025 0 0 0</pose>
+      <visual name="pillar_3_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.05</length>
+          </cylinder>
+        </geometry>
+      </visual>
+    </link>
+    <joint name="pillar_3_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>pillar_3</child>
+    </joint>
+    <link name="pillar_4">
+      <pose relative_to="base_link">-0.05 -0.05 0.025 0 0 0</pose>
+      <visual name="pillar_4_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.05</length>
+          </cylinder>
+        </geometry>
+      </visual>
+    </link>
+    <joint name="pillar_4_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>pillar_4</child>
+    </joint>
+
+    <!-- Podstavec -->
+    <link name="plate">
+      <pose relative_to="base_link">0 0 0.050 0 0 0</pose>
+      <inertial>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.001</ixx>
+          <iyy>0.001</iyy>
+          <izz>0.001</izz>
+        </inertia>
+      </inertial>
+      <visual name="plate_visual">
+        <geometry>
+          <box>
+            <size>0.12 0.12 0.001</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.0 0.4 0.0 1</ambient>
+          <diffuse>0.0 0.4 0.0 1</diffuse>
+          <specular>0.0 0.4 0.0 1</specular>
+        </material>
+      </visual>
+      <collision name="plate_collision">
+        <geometry>
+          <box>
+            <size>0.12 0.12 0.001</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="plate_joint" type="fixed">
+      <parent>pillar_1</parent>
+      <child>plate</child>
+    </joint>
+
+    <!-- Matičná doska -->
+    <link name="motherboard">
+      <pose relative_to="plate">0 0 0.005 0 0 0</pose>
+      <inertial>
+        <mass>0.2</mass>
+        <inertia>
+          <ixx>0.001</ixx>
+          <iyy>0.001</iyy>
+          <izz>0.001</izz>
+        </inertia>
+      </inertial>
+      <visual name="motherboard_visual">
+        <geometry>
+          <box>
+            <size>0.08 0.08 0.009</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.5 0.5 0.5 1</ambient>
+          <diffuse>0.5 0.5 0.5 1</diffuse>
+          <specular>0.5 0.5 0.5 1</specular>
+        </material>
+      </visual>
+      <collision name="motherboard_collision">
+        <geometry>
+          <box>
+            <size>0.08 0.08 0.009</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="motherboard_joint" type="fixed">
+      <parent>plate</parent>
+      <child>motherboard</child>
+    </joint>
+
+    <!-- Podstavec_2_vrchný -->
+    <link name="top_plate">
+      <pose relative_to="plate">0 0 0.025 0 0 0</pose>
+      <inertial>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.0005</ixx>
+          <iyy>0.0005</iyy>
+          <izz>0.0005</izz>
+        </inertia>
+      </inertial>
+      <visual name="top_plate_visual">
+        <geometry>
+          <box>
+            <size>0.12 0.12 0.005</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.0 0.6 0.0 1</ambient>
+          <diffuse>0.0 0.6 0.0 1</diffuse>
+          <specular>0.0 0.6 0.0 1</specular>
+        </material>
+      </visual>
+      <collision name="top_plate_collision">
+        <geometry>
+          <box>
+            <size>0.12 0.12 0.005</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="top_plate_joint" type="fixed">
+      <parent>pillar_5</parent>
+      <child>top_plate</child>
+    </joint>
+
+    <!-- Jetson Nano počítač -->
+    <link name="jetson_nano">
+      <pose relative_to="top_plate">0 0 -0.005 0 0 0</pose>
+      <inertial>
+        <mass>0.2</mass>
+        <inertia>
+          <ixx>0.001</ixx>
+          <iyy>0.001</iyy>
+          <izz>0.001</izz>
+        </inertia>
+      </inertial>
+      <visual name="jetson_nano_visual">
+        <geometry>
+          <box>
+            <size>0.08 0.08 0.014</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.2 0.2 0.2 1</ambient>
+          <diffuse>0.2 0.2 0.2 1</diffuse>
+          <specular>0.2 0.2 0.2 1</specular>
+        </material>
+      </visual>
+      <collision name="jetson_nano_collision">
+        <geometry>
+          <box>
+            <size>0.08 0.08 0.014</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="jetson_nano_joint" type="fixed">
+      <parent>top_plate</parent>
+      <child>jetson_nano</child>
+    </joint>
+
+    <!-- Piliere vrchné -->
+    <link name="pillar_5">
+      <pose relative_to="plate">0.045 0.045 0.0125 0 0 0</pose>
+      <inertial>
+        <mass>0.02</mass>
+        <inertia>
+          <ixx>0.0002</ixx>
+          <iyy>0.0002</iyy>
+          <izz>0.0002</izz>
+        </inertia>
+      </inertial>
+      <visual name="pillar_5_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.025</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="pillar_5_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.025</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="pillar_5_joint" type="fixed">
+      <parent>plate</parent>
+      <child>pillar_5</child>
+    </joint>
+    <link name="pillar_6">
+      <pose relative_to="plate">-0.045 0.045 0.0125 0 0 0</pose>
+      <inertial>
+        <mass>0.02</mass>
+        <inertia>
+          <ixx>0.0002</ixx>
+          <iyy>0.0002</iyy>
+          <izz>0.0002</izz>
+        </inertia>
+      </inertial>
+      <visual name="pillar_6_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.025</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="pillar_6_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.025</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="pillar_6_joint" type="fixed">
+      <parent>plate</parent>
+      <child>pillar_6</child>
+    </joint>
+    <link name="pillar_7">
+      <pose relative_to="plate">0.045 -0.045 0.0125 0 0 0</pose>
+      <inertial>
+        <mass>0.02</mass>
+        <inertia>
+          <ixx>0.0002</ixx>
+          <iyy>0.0002</iyy>
+          <izz>0.0002</izz>
+        </inertia>
+      </inertial>
+      <visual name="pillar_7_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.025</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="pillar_7_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.025</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="pillar_7_joint" type="fixed">
+      <parent>plate</parent>
+      <child>pillar_7</child>
+    </joint>
+    <link name="pillar_8">
+      <pose relative_to="plate">-0.045 -0.045 0.0125 0 0 0</pose>
+      <inertial>
+        <mass>0.02</mass>
+        <inertia>
+          <ixx>0.0002</ixx>
+          <iyy>0.0002</iyy>
+          <izz>0.0002</izz>
+        </inertia>
+      </inertial>
+      <visual name="pillar_8_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.025</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+          <specular>0 0 0 1</specular>
+        </material>
+      </visual>
+      <collision name="pillar_8_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.005</radius>
+            <length>0.025</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="pillar_8_joint" type="fixed">
+      <parent>plate</parent>
+      <child>pillar_8</child>
+    </joint>
+
+    <!-- Batérie -->
+    <link name="battery_1">
+      <pose relative_to="plate">-0.018 0 -0.010 1.5707 1.5707 0</pose>
+      <inertial>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>0.0005</ixx>
+          <iyy>0.0005</iyy>
+          <izz>0.0005</izz>
+        </inertia>
+      </inertial>
+      <visual name="battery_1_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.009</radius>
+            <length>0.050</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>1 1 0 1</ambient>
+          <diffuse>1 1 0 1</diffuse>
+          <specular>1 1 0 1</specular>
+        </material>
+      </visual>
+      <collision name="battery_1_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.009</radius>
+            <length>0.050</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="battery_1_joint" type="fixed">
+      <parent>plate</parent>
+      <child>battery_1</child>
+    </joint>
+
+    <link name="battery_2">
+      <pose relative_to="plate">0 0 -0.010 1.5707 1.5707 0</pose>
+      <inertial>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>0.0005</ixx>
+          <iyy>0.0005</iyy>
+          <izz>0.0005</izz>
+        </inertia>
+      </inertial>
+      <visual name="battery_2_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.009</radius>
+            <length>0.050</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>1 1 0 1</ambient>
+          <diffuse>1 1 0 1</diffuse>
+          <specular>1 1 0 1</specular>
+        </material>
+      </visual>
+      <collision name="battery_2_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.009</radius>
+            <length>0.050</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="battery_2_joint" type="fixed">
+      <parent>plate</parent>
+      <child>battery_2</child>
+    </joint>
+
+    <link name="battery_3">
+      <pose relative_to="plate">0.018 0 -0.010 1.5707 1.5707 0</pose>
+      <inertial>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>0.0005</ixx>
+          <iyy>0.0005</iyy>
+          <izz>0.0005</izz>
+        </inertia>
+      </inertial>
+      <visual name="battery_3_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.009</radius>
+            <length>0.050</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>1 1 0 1</ambient>
+          <diffuse>1 1 0 1</diffuse>
+          <specular>1 1 0 1</specular>
+        </material>
+      </visual>
+      <collision name="battery_3_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.009</radius>
+            <length>0.050</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="battery_3_joint" type="fixed">
+      <parent>plate</parent>
+      <child>battery_3</child>
+    </joint>
+
+    <!-- Podstavec pre kameru -->
+    <link name="camera_base">
+      <pose relative_to="base_link">0.09 0 0.045 0 0 0</pose>
+      <inertial>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>0.0005</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0005</iyy>
+          <iyz>0</iyz>
+          <izz>0.0005</izz>
+        </inertia>
+      </inertial>
+      <visual name="camera_base_visual">
+        <geometry>
+          <box>
+            <size>0.015 0.010 0.04</size>
+          </box>
+        </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+            <specular>0 1 0 1</specular>
+          </material>
+      </visual>
+      <collision name="camera_base_collision">
+        <geometry>
+          <box>
+            <size>0.015 0.010 0.04</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="camera_base_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>camera_base</child>
     </joint>
 
     <!-- Kamera -->
     <link name="camera">
-      <pose relative_to="base_link">0.1 0 0.03 0 0 0</pose>
+      <pose relative_to="camera_base">0.01 0 0.025 0 0.15 0</pose>
       <visual name='camera_visual'>
         <geometry>
           <box>
-            <size>0.03 0.03 0.03</size>
+            <size>0.02 0.02 0.02</size>
           </box>
         </geometry>
         <material>
@@ -269,7 +939,7 @@
       <collision name='camera_collision'>
         <geometry>
           <box>
-            <size>0.03 0.03 0.03</size>
+            <size>0.02 0.02 0.02</size>
           </box>
         </geometry>
       </collision>
@@ -292,13 +962,13 @@
       </sensor>
     </link>
     <joint name='camera_joint' type='fixed'>
-      <parent>base_link</parent>
+      <parent>camera_base</parent>
       <child>camera</child>
     </joint>
 
     <!-- Podstavec pre LIDAR -->
     <link name='lidar_base'>
-      <pose relative_to="base_link">0 0 0.025 0 0 0</pose>
+      <pose relative_to="top_plate">0 0 0.010 0 0 0</pose>
       <inertial>
         <mass>0.1</mass>
         <inertia>
@@ -314,7 +984,7 @@
         <geometry>
           <cylinder>
             <radius>0.04</radius>
-            <length>0.035</length>
+            <length>0.030</length>
           </cylinder>
         </geometry>
         <material>
@@ -327,13 +997,13 @@
         <geometry>
           <cylinder>
             <radius>0.04</radius>
-            <length>0.035</length>
+            <length>0.030</length>
           </cylinder>
         </geometry>
       </collision>
     </link>
     <joint name='lidar_base_joint' type='fixed'>
-      <parent>base_link</parent>
+      <parent>top_plate</parent>
       <child>lidar_base</child>
     </joint>
 
@@ -416,8 +1086,8 @@
       <topic>joint_states</topic>
       <joint_name>left_wheel_joint</joint_name>
       <joint_name>right_wheel_joint</joint_name>
-      <joint_name>balance_joint</joint_name>
-      <joint_name>balance_joint_2</joint_name>
+      <joint_name>balance_wheel_joint</joint_name>
+      <joint_name>balance_wheel_2_joint</joint_name>
     </plugin>
 
   </model>
