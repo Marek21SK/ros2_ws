@@ -8,6 +8,10 @@ moje_build_logs/
 
 components/
 
+jetbot2/
+
+mobilny_robot/
+
 *.gv
 
 *.pdf
