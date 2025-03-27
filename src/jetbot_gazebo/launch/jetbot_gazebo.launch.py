@@ -1,94 +1,78 @@
+from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch.actions import ExecuteProcess
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import PathJoinSubstitution
 import os
 
 def generate_launch_description():
-    # Cesta k súboru sveta pre Gazebo
+    # Nastavenie cesty ku svetu
     world_path = os.path.join(
-        '/home/mpastor2/ros2_ws/src/jetbot_gazebo/worlds',
-        'test_world.sdfworld'
+        get_package_share_directory("jetbot_gazebo"),
+        "worlds",
+        "test_world.sdf"
     )
 
     # Cesta k JetBot SDF
-    urdf_path = os.path.join(
-        '/home/mpastor2/ros2_ws/src/jetbot_gazebo/models/jetbot/sdf',
-        'jetbot.sdf'
-    )
-
-    # Spustenie Gazebo Harmony
-    gazebo = ExecuteProcess(
-        cmd=["gz", "sim", "-v", "4", "-r", world_path],
-        output="screen"
-    )
-
-    # Spustenie robot_state_publisher
-    robot_state_publisher = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        parameters=[{'robot_description': open(urdf_path).read()}],
-        output='screen'
-    )
-    
-    # Ovládanie robota cez klávesnicu
-    teleop_twist_keyboard = Node(
-      package='teleop_twist_keyboard',
-      executable='teleop_twist_keyboard',
-      output='screen',
-      remappings=[('/cmd_vel', '/jetbot/cmd_vel')]
-    )
-
-    # Spustenie controller_manager s YAML konfiguráciou
-    controller_manager = Node(
-        package='controller_manager',
-        executable='ros2_control_node',
-        output='screen',
-        parameters=[
-            {'robot_description': open(urdf_path).read()},
-            os.path.join('/home/mpastor2/ros2_ws/src/jetbot_gazebo/config', 'jetbot_controller.yaml')
-        ]
-    )
-
-    # Spustenie ros_gz_bridge
-    ros_gz_bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='ros_gz_bridge',
-        output='screen',
-        arguments=[
-            '/model/jetbot/cmd_vel@geometry_msgs/msg/Twist[gz.msgs.Twist',
-            '/jetbot/odom/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
-            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
-            '/image_raw@sensor_msgs/msg/Image[gz.msgs.Image',
-            '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model'
-        ]
-    )
-
-    # Spawnovanie robota v Gazebo
-    spawn_robot = Node(
-        package='ros_gz_sim',
-        executable='create',
-        arguments=['-file', urdf_path, '-name', 'jetbot', '-x', '1.0', '-y', '1.0', '-z', '0.1'],
-        output='screen'
-    )
-    
-    spawn_joint_state_broadcaster = ExecuteProcess(
-        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active', 'joint_state_broadcaster'],
-        output='screen'
-    )
-
-    spawn_diff_drive_controller = ExecuteProcess(
-        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active', 'diff_drive_controller'],
-        output='screen'
+    model_path = os.path.join(
+        get_package_share_directory("jetbot_gazebo"),
+        "models",
+        "jetbot",
+        "jetbot.sdf"
     )
 
     return LaunchDescription([
-        gazebo,
-        robot_state_publisher,
-        #teleop_twist_keyboard, //// musím otvoriť fyzický terminál
-        controller_manager,
-        ros_gz_bridge,
-        spawn_robot,
-        spawn_joint_state_broadcaster,
-        spawn_diff_drive_controller
+
+        # Spustenie Gazebo so svetom
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(PathJoinSubstitution([
+                get_package_share_directory("ros_gz_sim"),
+                "launch",
+                "gz_sim.launch.py"
+            ])),
+            launch_arguments={
+                "gz_args": world_path,
+                "on_exit_shutdown": "True"
+            }.items(),
+        ),
+
+        # Most medzi Gazebo a ROS2
+        Node(
+            package='ros_gz_bridge',
+            executable='parameter_bridge',
+            arguments=[
+                '/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
+                '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
+                '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+                '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+                '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+                '/image@sensor_msgs/msg/Image[gz.msgs.Image'
+            ],
+            output='screen'
+        ),
+
+        # robot_state_publisher na zobrazenie v Rviz2
+        Node(
+            package="robot_state_publisher",
+            executable="robot_state_publisher",
+            parameters=[{'robot_description': open(model_path).read()}],
+            output="screen"
+        ),
+
+        # RViz2
+        Node(
+            package="rviz2",
+            executable="rviz2",
+            name="rviz2",
+            output="screen",
+            arguments=['-d', '/home/mpastor2/ros2_ws/src/jetbot_description/rviz/jetbot_config.rviz']
+        ),
+
+        # # teleop_twist_keyboard
+        # Node(
+        #     package="teleop_twist_keyboard",
+        #     executable="teleop_twist_keyboard",
+        #     output="screen",
+        # ),
     ])
