@@ -46,9 +46,16 @@ install(DIRECTORY config/
   DESTINATION share/${PROJECT_NAME}/config
 )
 
+# Install launch files
 install(PROGRAMS launch/jetbot_gazebo.launch.py
   DESTINATION share/${PROJECT_NAME}/launch
 )
+
+# Install scripts files
+#install(DIRECTORY jetbot_gazebo/scripts/
+#  DESTINATION share/${PROJECT_NAME}/scripts
+#  USE_SOURCE_PERMISSIONS
+#)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
