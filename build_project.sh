@@ -3,8 +3,8 @@
 # 🔹 Skript na automatický build projektu
 
 # Vyčistenie premennných pred buildom
-unset AMENT_PREFIX_PATH
-unset CMAKE_PREFIX_PATH
+#unset AMENT_PREFIX_PATH
+#unset CMAKE_PREFIX_PATH
 
 # Zdrojovanie ROS2 Jazzy
 source /opt/ros/jazzy/setup.bash
