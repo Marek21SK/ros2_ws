@@ -15,3 +15,11 @@ mobilny_robot/
 *.gv
 
 *.pdf
+
+/.idea/.gitignore
+/.idea/discord.xml
+/.idea/misc.xml
+/.idea/ros2_ws.iml
+/.idea/vcs.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
