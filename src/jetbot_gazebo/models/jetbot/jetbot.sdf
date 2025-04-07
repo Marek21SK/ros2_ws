@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <sdf version="1.8">
 <!-- ................................... -->
-            <!-- VERZIA 0.60 -->
+            <!-- VERZIA 0.62 -->
 <!-- ................................... -->
   <model name='jetbot' canonical_link='base_link'>
 
@@ -108,9 +108,12 @@
       <pose relative_to='left_wheel'/>
       <parent>base_link</parent>
       <child>left_wheel</child>
-      <dynamics damping="0.5" friction="0.1"/>
       <axis>
         <xyz expressed_in='__model__'>0 1 0</xyz>
+        <dynamics>
+          <damping>0.5</damping>
+          <friction>0.1</friction>
+        </dynamics>
         <limit>
           <lower>-1.79769e+308</lower>
           <upper>1.79769e+308</upper>
@@ -166,9 +169,12 @@
       <pose relative_to='right_wheel'/>
       <parent>base_link</parent>
       <child>right_wheel</child>
-      <dynamics damping="0.5" friction="0.1"/>
       <axis>
         <xyz expressed_in='__model__'>0 1 0</xyz>
+        <dynamics>
+          <damping>0.5</damping>
+          <friction>0.1</friction>
+        </dynamics>
         <limit>
           <lower>-1.79769e+308</lower>
           <upper>1.79769e+308</upper>
@@ -212,12 +218,15 @@
     <child>balance_wheel_base</child>
     <axis>
       <xyz>0 0 1</xyz>
+      <dynamics>
+        <damping>0.1</damping>
+        <friction>0.01</friction>
+      </dynamics>
       <limit>
         <lower>-1.79769e+308</lower>
         <upper>1.79769e+308</upper>
       </limit>
     </axis>
-    <dynamics damping="0.1" friction="0.01"/>
   </joint>
 
     <!-- Pomocné koleso -->
@@ -265,7 +274,7 @@
     <joint name='balance_wheel_joint' type='ball'>
       <parent>balance_wheel_base</parent>
       <child>balance_wheel</child>
-      <dynamics damping="0.5" friction="0.1"/>
+      <!--<dynamics damping="0.5" friction="0.1"/>-->
     </joint>
 
     <!-- Podstavec pre pomocné koleso_2 -->
@@ -304,12 +313,15 @@
       <child>balance_wheel_2_base</child>
       <axis>
         <xyz>0 0 1</xyz>
+        <dynamics>
+          <damping>0.1</damping>
+          <friction>0.01</friction>
+        </dynamics>
         <limit>
           <lower>-1.79769e+308</lower>
           <upper>1.79769e+308</upper>
         </limit>
       </axis>
-      <dynamics damping="0.1" friction="0.01"/>
     </joint>
 
     <!-- Pomocné koleso_2 -->
@@ -357,7 +369,7 @@
     <joint name='balance_wheel_2_joint' type='ball'>
       <parent>balance_wheel_2_base</parent>
       <child>balance_wheel_2</child>
-      <dynamics damping="0.5" friction="0.1"/>
+     <!--<dynamics damping="0.5" friction="0.1"/>-->
     </joint>
 
     <!-- Anténka_1 -->
