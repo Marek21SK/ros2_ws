@@ -8,7 +8,6 @@ Panels:
         - /Status1
         - /RobotModel1
         - /TF1
-        - /TF1/Frames1
         - /Path1
         - /Path1/Topic1
         - /Path1/Offset1
@@ -18,6 +17,7 @@ Panels:
         - /Image1/Topic1
         - /LaserScan1
         - /Marker1
+        - /Marker1/Status1
         - /Marker1/Topic1
       Splitter Ratio: 0.5
     Tree Height: 407
@@ -476,7 +476,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /contact
+        Value: /marker
       Value: true
   Enabled: true
   Global Options:
@@ -524,25 +524,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 5.078281402587891
+      Distance: 8.210339546203613
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.05321929231286049
-        Y: 0.05987340956926346
-        Z: 0.04346238821744919
+        X: -0.05899156630039215
+        Y: -0.03833220899105072
+        Z: -0.02081185206770897
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5352023839950562
+      Pitch: 0.635202169418335
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz_default_plugins)
-      Yaw: 3.1354570388793945
+      Yaw: 3.160451650619507
     Saved: ~
 Window Geometry:
   Displays:
