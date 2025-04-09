@@ -11,7 +11,7 @@ Tento projekt je súčasťou diplomovej práce, ktorej cieľom je **preskúmať 
 - ✅ Implementovať robotické algoritmy v **ROS2 Jazzy** a vizualizovať ich v **RViz2**.  
 - ✅ Nasadiť vytvorené algoritmy priamo na reálny JetBot s ROS1 (ROS2) na **Jetson Nano**.  
 - ✅ Vyhodnotiť správanie a efektivitu algoritmov v simulácii a na reálnom zariadení.
-- ✅ Odtestovať tieto skutočnosti na moiblnej robotickej platforme JetBot 
+- ✅ Odtestovať tieto skutočnosti na mobilnej robotickej platforme JetBot
 
 ## 🧠 Použité technológie
 
@@ -63,14 +63,15 @@ Všetky tieto algoritmy sú implementované ako samostatné ROS2 nody v jazyku *
 
 - `path_publisher.py` – Zaznamenávanie pohybu robota vo svete
 - `obstacle_stop.py` – Zastavenie pri prekážke  
-- `obstacle_avoidance.py` – Obchádzanie prekážky (otáčanie, pohyb vpred)  
+- `obstacle_avoid.py` – Obchádzanie prekážky (otáčanie, pohyb vpred)  
 - ~~`run_to_goal.py`~~ – Navigácia k cieľu pomocou stavového automatu
 - ~~`wall_following.py`~~ – Sledovanie steny  
 - ~~`bug0.py`~~ – Navigácia pomocou Bug 0 algoritmu  
 - ~~`bug1.py`~~ – Navigácia pomocou Bug 1 algoritmu
+- `tracking_node.py` – Sledovanie prekážky, detekcia čiar (Houghova transformácia)
 - ďalšie algoritmy 🐣
 
-> **Poznámka**: V priebehu implementovania môžu pribudnúť nové alogirtmy 🚧
+> **Poznámka**: V priebehu implementovania môžu pribudnúť nové alogirtmy.
 > 
 > **Poznámka**: Prečiarknuté algoritmy označujú 🚧 - *work in progress*
 
@@ -79,7 +80,7 @@ Všetky tieto algoritmy sú implementované ako samostatné ROS2 nody v jazyku *
 - **Model robota**: Obsahuje hlavné komponenty, LIDAR, kameru, IMU, stereo, antény, batériu a kontaktné senzory.  
 - **Svet**: Definovaný vo vlastnom `.sdf` súbore (`test_world.sdf`).  
 - **Ovládanie**: Implementované cez `ros2_control` s pluginom `diffdrive/DiffDrive` a kontrolérom `diff_drive_controller`.  
-- **Ovládanie**: robota cez ros2_control **🛠️**
+- ~~**Ovládanie**: robota cez ros2_control + controller manager **🛠️**~~
 ## 🗺️ Spúšťanie simulácie
 
 ```
