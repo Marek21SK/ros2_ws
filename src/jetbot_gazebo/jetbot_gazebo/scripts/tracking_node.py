@@ -12,36 +12,6 @@ from tf2_ros import TransformListener, Buffer
 
 bridge = CvBridge()
 
-class MinimalPublisher(Node):
-    def __init__(self):
-        super().__init__("minimal_publisher")
-        self.subscription = self.create_subscription(LaserScan, "/scan", self.laser_callback, 10)
-        self.publisher_ = self.create_publisher(Twist, "/cmd_vel", 10)
-        self.move(0.5, 0.0)
-
-        self.last_log_time = self.get_clock().now()
-        self.log_interval = 5.0
-
-    def laser_callback(self, msg):
-        now = self.get_clock().now()
-        elapsed = (now - self.last_log_time).nanoseconds / 1e9
-        v = msg.ranges[len(msg.ranges) // 2]
-
-        if elapsed >= self.log_interval:
-            self.get_logger().info(f"Vzdialenosť vpredu: {v:.2f} m")
-            self.last_log_time = now
-
-        if v < 0.25:
-            self.get_logger().info(f"Zastavujem, prekážka vo vzdialenosti: {v:.2f} m")
-            self.move(0.0, 0.0)
-
-    def move(self, l, a):
-        msg = Twist()
-        msg.linear.x = l
-        msg.angular.z = a
-        self.publisher_.publish(msg)
-
-
 class ProcessImage(Node):
     def __init__(self):
         super().__init__("tracking_publisher")
@@ -58,7 +28,7 @@ class ProcessImage(Node):
         # Inicializácia tf2
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
-        self.get_logger().info("tf_buffer a tf_listener inicializované")
+        # self.get_logger().info("tf_buffer a tf_listener inicializované")
 
         # Časovanie pre logy
         self.last_log_time_image = self.get_clock().now()
@@ -106,7 +76,7 @@ class ProcessImage(Node):
         # img = cv2.flip(img, 1) #Zrkadlenie obrazu
 
         if elapsed_image >= self.log_interval_image:
-            self.get_logger().info("Obrázok prijatý.")
+            # self.get_logger().info("Obrázok prijatý.")
             self.last_log_time_image = now
 
         if self.mode == "lines":
@@ -138,7 +108,7 @@ class ProcessImage(Node):
         now = self.get_clock().now()
         elapsed = (now - self.last_log_time_lines).nanoseconds / 1e9
         if elapsed >= self.log_interval_lines:
-            self.get_logger().info("Detekujem priamky...")
+            # self.get_logger().info("Detekujem priamky...")
             self.last_log_time_lines = now
 
         if lines is not None:
@@ -161,7 +131,10 @@ class ProcessImage(Node):
 
     def search_cone(self, img):
         img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        mask_orange = cv2.inRange(img_hsv, (0, 50, 50), (40, 255, 255))
+        mask_orange = cv2.inRange(img_hsv, (0, 30, 30), (20, 255, 255))
+        mask_orange = cv2.GaussianBlur(mask_orange, (5, 5), 0)
+        kernel = np.ones((3, 3), np.uint8)
+        mask_orange = cv2.dilate(mask_orange, kernel, iterations=1)
         cv2.imshow("Maska", mask_orange)
         contours, _ = cv2.findContours(mask_orange, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         result = img.copy()
@@ -174,7 +147,7 @@ class ProcessImage(Node):
         cone_detected = False
 
         if elapsed_contours >= self.log_interval_contours:
-            self.get_logger().info(f"[Kužeľ] Počet kontúr: {len(contours)}")
+            # self.get_logger().info(f"[Kužeľ] Počet kontúr: {len(contours)}")
             self.last_log_time_contours = now
 
         if len(contours) > 0:
@@ -183,7 +156,8 @@ class ProcessImage(Node):
             if elapsed_contours >= self.log_interval_contours:
                 self.get_logger().info(f"[Kužeľ] Plocha najväčšej kontúry: {area:.2f}")
 
-            if area > 100:
+            min_area = 100 if self.closest_distance < 1.0 else 30
+            if area > min_area:
                 cone_detected = True
                 self.last_cone_time = time.time()
                 self.searching_cone = False  # Ak nájde kužeľ, hľadanie sa zastaví
@@ -273,7 +247,7 @@ class ProcessImage(Node):
                             twist_msg.angular.z = -0.2 if offset > 0 else 0.2
 
                     if elapsed_events >= self.log_interval_events:
-                        self.get_logger().info(f"[Kužeľ] Offset: {offset}, vzdialenosť: {self.closest_distance:.2f}")
+                       # self.get_logger().info(f"[Kužeľ] Offset: {offset}, vzdialenosť: {self.closest_distance:.2f}")
                         self.last_log_time_events = now
 
         # Hľadanie kužeľa ak nie je detekovaný
@@ -290,6 +264,7 @@ class ProcessImage(Node):
 
             if self.search_angle >= math.radians(90):
                 self.searching_cone = False
+                self.search_angle = 0.0
                 self.last_cone_time = time.time()
                 twist_msg.angular.z = 0.0
 
@@ -314,7 +289,7 @@ class ProcessImage(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    test_node = ProcessImage()  # MinimalPublisher()
+    test_node = ProcessImage()
 
     while rclpy.ok() and test_node.running:
         rclpy.spin_once(test_node, timeout_sec=0.1)
