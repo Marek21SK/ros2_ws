@@ -4,14 +4,14 @@ package_name = 'jetbot_description'
 
 setup(
     name=package_name,
-    version='0.0.0',
+    version='0.5.1',
     packages=find_packages(include=['jetbot_description', 'jetbot_description.*']),
     data_files=[
-        ('share/ament_index/resource_index/packages',
-            ['resource/' + package_name]),
+        ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/models/urdf', ['models/urdf/jetbot.urdf']),
         ('share/' + package_name + '/launch', ['launch/jetbot_rviz.launch.py']),
+        ('share/' + package_name + '/rviz', ['rviz/jetbot_config.rviz']),
     ],
     install_requires=['setuptools'],
     extras_require={
