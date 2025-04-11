@@ -126,4 +126,5 @@ cd ros2_ws
 ---
 
 > 💡 **Tento projekt predstavuje prepojenie medzi simuláciou a reálnym riadením robota, čo umožňuje bezpečné testovanie a nasadenie algoritmov v reálnom prostredí.**
-> 
+
+> ⚠️ *Všetky potrebné predinštalované závislosti nie sú súčasťou tohto projektu. Ich inštalácia je na samotnom používateľovi.*
