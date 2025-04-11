@@ -4,7 +4,7 @@ package_name = 'jetbot_gazebo'
 
 setup(
     name=package_name,
-    version='0.0.0',
+    version='0.5.1',
     packages=find_packages(include=['jetbot_gazebo', 'jetbot_gazebo.*']),
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
