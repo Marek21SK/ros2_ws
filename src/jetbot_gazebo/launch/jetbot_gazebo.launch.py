@@ -1,9 +1,9 @@
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import PathJoinSubstitution, Command
 import os
 
 def generate_launch_description():
@@ -20,6 +20,80 @@ def generate_launch_description():
         "models",
         "jetbot",
         "jetbot.sdf"
+    )
+
+    # Cesta k Rviz configu
+    rviz_config_path = os.path.join(
+        get_package_share_directory("jetbot_description"),
+        "rviz",
+        "jetbot_config.rviz"
+    )
+
+    static_tf = ExecuteProcess(
+        cmd=[
+            'ros2', 'run', 'tf2_ros', 'static_transform_publisher',
+            '--x', '0', '--y', '0', '--z', '0',
+            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--frame-id', 'world', '--child-frame-id', 'odom'
+        ],
+        output='screen'
+    )
+
+    # Nody pre robota
+    collision_test = Node(
+        package='jetbot_gazebo',
+        executable='collision_test',
+        name='collision_test',
+        output='screen'
+    )
+
+    obstacle_stop = Node(
+        package='jetbot_gazebo',
+        executable='obstacle_stop',
+        name='obstacle_stop',
+        output='screen'
+    )
+
+    obstacle_avoid = Node(
+        package='jetbot_gazebo',
+        executable='obstacle_avoid',
+        name='obstacle_avoid',
+        output='screen'
+    )
+
+    run_to_goal = Node(
+        package='jetbot_gazebo',
+        executable='run_to_goal',
+        name='run_to_goal',
+        output='screen'
+    )
+
+    follow_wall = Node(
+        package='jetbot_gazebo',
+        executable='follow_wall',
+        name='follow_wall',
+        output='screen'
+    )
+
+    bug0_algoritmus = Node(
+        package='jetbot_gazebo',
+        executable='bug0_algoritmus',
+        name='bug0_algoritmus',
+        output='screen'
+    )
+
+    bug1_algoritmus = Node(
+        package='jetbot_gazebo',
+        executable='bug1_algoritmus',
+        name='bug1_algoritmus',
+        output='screen'
+    )
+
+    tracking_node = Node(
+        package='jetbot_gazebo',
+        executable='tracking_node',
+        name='tracking_node',
+        output='screen'
     )
 
     return LaunchDescription([
@@ -66,13 +140,25 @@ def generate_launch_description():
             executable="rviz2",
             name="rviz2",
             output="screen",
-            arguments=['-d', '/home/mpastor2/ros2_ws/src/jetbot_description/rviz/jetbot_config.rviz']
+            arguments=['-d', rviz_config_path]
         ),
 
-        # # teleop_twist_keyboard
-        # Node(
-        #     package="teleop_twist_keyboard",
-        #     executable="teleop_twist_keyboard",
-        #     output="screen",
-        # ),
+        # Path Publisher
+        Node(
+            package='jetbot_gazebo',
+            executable='path_publisher',
+            name='path_publisher',
+            output='log'
+        ),
+
+        # Spúšťanie skriptov
+        static_tf,
+        tracking_node,
+        # collision_test,
+        # obstacle_stop,
+        # obstacle_avoid,
+        # run_to_goal,
+        # follow_wall,
+        # bug0_algoritmus,
+        # bug1_algoritmus,
     ])
