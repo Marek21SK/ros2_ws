@@ -8,7 +8,7 @@ Tento projekt je súčasťou diplomovej práce, ktorej cieľom je **preskúmať 
 
 - ✅ Preskúmať možnosti JetBot platformy a jej komponentov.  
 - ✅ Vytvoriť realistickú simuláciu robota JetBot v prostredí **Gazebo Harmony**.  
-- ✅ Implementovať robotické algoritmy v **ROS2 Jazzy** a vizualizovať ich v **RViz2**.  
+- ✅ Implementovať robotické algoritmy v **ROS2 Jazzy, ROS1 Melodic** a vizualizovať ich v **RViz2**.  
 - ✅ Nasadiť vytvorené algoritmy priamo na reálny JetBot s ROS1 (ROS2) na **Jetson Nano**.  
 - ✅ Vyhodnotiť správanie a efektivitu algoritmov v simulácii a na reálnom zariadení.
 - ✅ Odtestovať tieto skutočnosti na mobilnej robotickej platforme JetBot
@@ -17,8 +17,8 @@ Tento projekt je súčasťou diplomovej práce, ktorej cieľom je **preskúmať 
 
 - **JetBot ROS AI Kit** od Waveshare  
 - **NVIDIA Jetson Nano** od spoločnosti NVIDIA (Ubuntu 18.04.6)  
-- **ROS1 Noetic** (na robotovi JetBot)  
-- **ROS2 Jazzy** (pre simulácie)  
+- **ROS1 Melodic** (na robotovi JetBot)  
+- **ROS2 Jazzy** (u mňa v PC)  
 - **Gazebo 8 Harmony** (simulačné prostredie)  
 - **RViz2** (vizualizácia)   
 
