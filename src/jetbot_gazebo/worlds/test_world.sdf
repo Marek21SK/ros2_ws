@@ -17,15 +17,6 @@
     <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
       <render_engine>ogre2</render_engine>
     </plugin>
-<!--    <plugin filename="gz-sim-triggered-publisher-system" name="gz::sim::systems::TriggeredPublisher">-->
-<!--      <input type="gz.msgs.Boolean" topic="/jetbot/touched">-->
-<!--        <match>data: true</match>-->
-<!--      </input>-->
-<!--      <output type="gz.msgs.Twist" topic="/cmd_vel">-->
-<!--        <linear> {x: 0.0} </linear>-->
-<!--        <angular> {z: 0.0} </angular>-->
-<!--      </output>-->
-<!--    </plugin>-->
 
     <!-- Svetlo -->
     <light type="directional" name="sun">
