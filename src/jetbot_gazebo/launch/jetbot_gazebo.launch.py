@@ -29,16 +29,6 @@ def generate_launch_description():
         "jetbot_config.rviz"
     )
 
-    static_tf = ExecuteProcess(
-        cmd=[
-            'ros2', 'run', 'tf2_ros', 'static_transform_publisher',
-            '--x', '0', '--y', '0', '--z', '0',
-            '--roll', '0', '--pitch', '0', '--yaw', '0',
-            '--frame-id', 'world', '--child-frame-id', 'odom'
-        ],
-        output='screen'
-    )
-
     # Nody pre robota
     collision_test = Node(
         package='jetbot_gazebo',
@@ -152,7 +142,6 @@ def generate_launch_description():
         ),
 
         # Spúšťanie skriptov
-        static_tf,
         tracking_node,
         # collision_test,
         # obstacle_stop,
