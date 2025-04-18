@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <sdf version="1.8">
 <!-- ................................... -->
-            <!-- VERZIA 0.62 -->
+            <!-- VERZIA 0.63 -->
 <!-- ................................... -->
   <model name='jetbot' canonical_link='base_link'>
 
@@ -1172,7 +1172,7 @@
       <wheel_separation>0.21325</wheel_separation>
       <wheel_radius>0.033</wheel_radius>
       <odom_topic>odom</odom_topic>
-      <odom_publish_frequency>10</odom_publish_frequency>
+      <odom_publish_frequency>50</odom_publish_frequency>
       <topic>cmd_vel</topic>
       <cmd_timeout>0.5</cmd_timeout>
       <tf_topic>tf</tf_topic>
