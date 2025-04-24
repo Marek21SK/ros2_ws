@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 
-##############
-# pokúsiť sa implementovať IMU senzor
-# pokúsiť sa implementovať vyhýbanie sa stenám
-##############
-
 from rclpy.node import Node
 from geometry_msgs.msg import Twist, PointStamped, Point
 from sensor_msgs.msg import LaserScan, Image
